@@ -779,3 +779,50 @@ ALTER TABLE public.order_items
 -- PostgreSQL database dump complete
 --
 
+-- =====================================================================
+-- Round 1 enrichment: order lifecycle, cuisines, restaurant details
+-- =====================================================================
+
+-- Order lifecycle ------------------------------------------------------
+
+CREATE TYPE public.order_status AS ENUM (
+    'placed',
+    'accepted',
+    'preparing',
+    'picked_up',
+    'delivered',
+    'cancelled'
+);
+
+ALTER TABLE public.orders
+    ADD COLUMN status       public.order_status NOT NULL DEFAULT 'placed',
+    ADD COLUMN placed_at    timestamptz NOT NULL DEFAULT now(),
+    ADD COLUMN accepted_at  timestamptz,   -- restaurant accepts the order
+    ADD COLUMN picked_up_at timestamptz,   -- driver collects the food
+    ADD COLUMN delivered_at timestamptz,   -- food reaches the customer
+    ADD COLUMN cancelled_at timestamptz,
+    -- each step can only happen after the one before it
+    ADD CONSTRAINT orders_timeline_check CHECK (
+        (accepted_at  IS NULL OR accepted_at  >= placed_at)    AND
+        (picked_up_at IS NULL OR picked_up_at >= accepted_at)  AND
+        (delivered_at IS NULL OR delivered_at >= picked_up_at)
+    );
+
+-- Cuisines ---------------------------------------------------------------
+
+CREATE TABLE public.cuisines (
+    id   integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name text NOT NULL UNIQUE
+);
+
+INSERT INTO public.cuisines (name) VALUES
+    ('American'), ('Chinese'), ('Indian'), ('Italian'),
+    ('Japanese'), ('Mediterranean'), ('Mexican'), ('Thai');
+
+-- Restaurant details -----------------------------------------------------
+
+ALTER TABLE public.restaurants
+    ADD COLUMN cuisine_id integer NOT NULL REFERENCES public.cuisines(id),
+    ADD COLUMN city       text NOT NULL,
+    ADD COLUMN opened_at  date;
+
