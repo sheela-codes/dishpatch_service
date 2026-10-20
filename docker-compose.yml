@@ -1,28 +1,33 @@
 services:
   db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: dishpatch
     ports:
-      - "5434:5432"          # 5434 on your Mac, so it doesn't clash with the course DB
+      - "5434:5432" # Mac port 5434, so it doesn't clash with the Nucamp course DB on 5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./src/data/sql:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data # named volume: the database files
+      - ./src/data/sql:/docker-entrypoint-initdb.d:ro # bind mount: schema scripts, run on first start only
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d dishpatch"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d dishpatch" ]
       interval: 5s
+      timeout: 3s
       retries: 10
 
   pgadmin:
-    image: dpage/pgadmin4:6.4
+    image: dpage/pgadmin4:8
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      PGADMIN_CONFIG_SESSION_COOKIE_NAME: "'dishpatch_pga4_session'"
     ports:
-      - "5050:800"            # open http://localhost:5050:800
+      - "5050:80" # http://localhost:5050
     depends_on:
       - db
 
@@ -31,13 +36,13 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/dishpatch
     ports:
-      - "8000:8000"          # open http://localhost:8000/docs
+      - "8000:8000" # http://localhost:8000/docs
     volumes:
-      - ./src:/app/src       # code changes reload without rebuilding
+      - ./src:/app/src # bind mount: code edits reload without a rebuild
     command: uvicorn src.app.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_healthy # wait until Postgres accepts connections
 
 volumes:
   pgdata:

@@ -241,7 +241,7 @@ CREATE TABLE public.orders (
     id integer NOT NULL,
     customer_id integer NOT NULL,
     restaurant_id integer NOT NULL,
-    driver_id integer NOT NULL
+    driver_id integer
 );
 
 
@@ -276,15 +276,6 @@ ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
 CREATE TABLE public.orders_restaurants (
     restaurant_id integer NOT NULL,
     order_id integer NOT NULL
-);
-
--- many to many relationship between orders and one menu_item, order can have many menu items and a menu_item can be in many orders.
-CREATE TABLE order_items (
-    order_id     integer NOT NULL REFERENCES orders(id),
-    menu_item_id integer NOT NULL REFERENCES menu_items(id),
-    quantity     integer NOT NULL CHECK (quantity > 0),
-    unit_price   numeric(10,2) NOT NULL,  -- price at time of order
-    PRIMARY KEY (order_id, menu_item_id)
 );
 
 
@@ -770,9 +761,18 @@ ALTER TABLE ONLY public.menu_items
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT fk_user_account FOREIGN KEY (account_id) REFERENCES public.accounts(id);
 
+-- many to many relationship between orders and one menu_item, order can have many menu items and a menu_item can be in many orders.
+CREATE TABLE public.order_items (
+    order_id     integer NOT NULL,
+    menu_item_id integer NOT NULL,
+    quantity     integer NOT NULL CHECK (quantity > 0),
+    unit_price   numeric(10,2) NOT NULL,  -- price at time of order
+    PRIMARY KEY (order_id, menu_item_id)
+);    
+
 ALTER TABLE public.order_items
     ADD CONSTRAINT fk_order_order_item FOREIGN KEY (order_id) REFERENCES public.orders(id),
-    ADD CONSTRAINT fk_order_item _menu_item FOREIGN KEY (menu_item_id) REFERENCES public.menu_items(id); 
+    ADD CONSTRAINT fk_order_item_menu_item FOREIGN KEY (menu_item_id) REFERENCES public.menu_items(id); 
 
 
 --
