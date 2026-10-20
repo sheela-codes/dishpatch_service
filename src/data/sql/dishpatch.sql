@@ -270,18 +270,6 @@ ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
 
 
 --
--- Name: orders_restaurants; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.orders_restaurants (
-    restaurant_id integer NOT NULL,
-    order_id integer NOT NULL
-);
-
-
-ALTER TABLE public.orders_restaurants OWNER TO postgres;
-
---
 -- Name: profiles; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -499,14 +487,6 @@ COPY public.orders (id, customer_id, restaurant_id, driver_id) FROM stdin;
 
 
 --
--- Data for Name: orders_restaurants; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.orders_restaurants (restaurant_id, order_id) FROM stdin;
-\.
-
-
---
 -- Data for Name: profiles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -647,14 +627,6 @@ ALTER TABLE ONLY public.menus
 
 ALTER TABLE ONLY public.orders
     ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
-
-
---
--- Name: orders_restaurants orders_restaurants_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.orders_restaurants
-    ADD CONSTRAINT orders_restaurants_pkey PRIMARY KEY (restaurant_id, order_id);
 
 
 --
