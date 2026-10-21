@@ -17,8 +17,8 @@ import numpy as np
 from faker import Faker
 
 from provider.config import PARTNER
-from provider.models import Restaurant, World
-from provider.reference import create_restaurants
+from provider.models import Driver, MenuItem, Restaurant, World
+from provider.reference import create_drivers, create_menu_items, create_restaurants
 from provider.writers import day_folder, reset_folder, write_csv, write_done
 
 
@@ -110,13 +110,17 @@ def main(argv=None) -> int:
         reset_folder(folder)   # start empty (only matters with --overwrite)
 
         # --- reference/ ---
-        if i == 0:
-            restaurants = create_restaurants(world, rng, fake)   # day one: all of them
-        else:
-            restaurants = []   # TODO: later-day changes -> make_reference_changes(world, rng)
-        n_restaurants = write_csv(folder / "reference" / "restaurants.csv",
-                                  restaurants, Restaurant.CSV_COLUMNS)
-        # TODO: reference/menu_items.csv, reference/drivers.csv
+        if i == 0:   # day one: everything
+            restaurants = create_restaurants(world, rng, fake)
+            menu_items = create_menu_items(world, rng)
+            drivers = create_drivers(world, rng, fake)
+        else:        # TODO: later-day changes -> make_reference_changes(world, rng)
+            restaurants, menu_items, drivers = [], [], []
+
+        reference = folder / "reference"
+        n_restaurants = write_csv(reference / "restaurants.csv", restaurants, Restaurant.CSV_COLUMNS)
+        n_menu_items = write_csv(reference / "menu_items.csv", menu_items, MenuItem.CSV_COLUMNS)
+        n_drivers = write_csv(reference / "drivers.csv", drivers, Driver.CSV_COLUMNS)
 
         # --- activity/ ---
         # TODO: activity/customers.csv -> make_new_customers(world, day, rng, fake)
@@ -124,7 +128,8 @@ def main(argv=None) -> int:
 
         write_done(folder)     # always last: tells the ingester this day is complete
 
-        log.info("%s: %d restaurants", day, n_restaurants)
+        log.info("%s: %d restaurants, %d menu items, %d drivers",
+                 day, n_restaurants, n_menu_items, n_drivers)
 
     log.info("Done.")
     return 0
