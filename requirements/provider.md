@@ -27,7 +27,10 @@ data/incoming/
 - **Day one** (`--start` date): `reference/` contains every restaurant, menu item and driver.
 - **Later days**: a reference file is written only if something in it changed, and it contains
   only the changed rows.
-- `activity/` is written every day.
+- `activity/` is written every day: `customers.csv` is always present (header only on a day with
+  no new customers) and `orders.jsonl` is always present.
+- A folder's date is the **Pacific** calendar day. Its orders were placed between local
+  10:00 and 22:00, so in UTC some of them carry the next day's date (e.g. 18:00 Pacific = 01:00Z).
 - `_DONE` is written after all other files are complete. It tells the ingester the delivery is finished.
 - The provider refuses to overwrite a day folder that already exists, unless `--overwrite` is given.
 - `data/incoming/` is generated, so it is listed in `.gitignore`.
@@ -99,7 +102,8 @@ Refs never change and are never reused.
 | active | yes (`false` = driver left) |
 
 ### activity/customers.csv
-New customers who signed up that day.
+New customers who signed up that day. Day one contains the partner's existing customers,
+who signed up during the year before day one. Refs follow signup order (`C0001` is the earliest).
 
 | Column | Required |
 |---|---|
@@ -124,7 +128,7 @@ One order per line:
 | customer_ref | yes | |
 | restaurant_ref | yes | |
 | driver_ref | no | `null` if no driver was assigned (e.g. cancelled early) |
-| status | yes | `placed`, `accepted`, `preparing`, `picked_up`, `delivered`, `cancelled` |
+| status | yes | `placed`, `accepted`, `preparing`, `picked_up`, `delivered`, `cancelled` (generated data uses only `delivered` and `cancelled`) |
 | placed_at | yes | |
 | accepted_at | no | `null` if it hasn't happened |
 | picked_up_at | no | |

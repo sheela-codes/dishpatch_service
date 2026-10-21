@@ -25,14 +25,15 @@ def reset_folder(folder: Path) -> None:
     folder.mkdir(parents=True)
 
 
-def write_csv(path: Path, records, columns) -> int:
+def write_csv(path: Path, records, columns, *, write_if_empty: bool = False) -> int:
     """Write records to a CSV file with a header row. Returns how many rows were written.
 
-    Writes nothing (and creates no file) when there are no records, because the spec says
-    a reference file only appears when something changed.
+    With no records, nothing is written (no file) unless write_if_empty=True:
+      - reference files only appear when something changed (default)
+      - activity/customers.csv is written every day, header only on a quiet day
     """
     records = list(records)
-    if not records:
+    if not records and not write_if_empty:
         return 0
     path.parent.mkdir(parents=True, exist_ok=True)
     # newline="" is required by the csv module; lineterminator="\n" gives plain Unix line endings.

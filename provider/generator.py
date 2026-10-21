@@ -17,9 +17,10 @@ import numpy as np
 from faker import Faker
 
 from provider.config import PARTNER
-from provider.models import Driver, MenuItem, Restaurant, World
+from provider.activity import create_customers_for_day, create_orders
+from provider.models import Customer, Driver, MenuItem, Restaurant, World
 from provider.reference import create_drivers, create_menu_items, create_restaurants
-from provider.writers import day_folder, reset_folder, write_csv, write_done
+from provider.writers import day_folder, reset_folder, write_csv, write_done, write_jsonl
 
 
 log = logging.getLogger("provider")
@@ -122,14 +123,20 @@ def main(argv=None) -> int:
         n_menu_items = write_csv(reference / "menu_items.csv", menu_items, MenuItem.CSV_COLUMNS)
         n_drivers = write_csv(reference / "drivers.csv", drivers, Driver.CSV_COLUMNS)
 
-        # --- activity/ ---
-        # TODO: activity/customers.csv -> make_new_customers(world, day, rng, fake)
-        # TODO: activity/orders.jsonl  -> make_orders(world, day, rng)
+        # --- activity/ (every day) ---
+        customers = create_customers_for_day(world, day, i == 0, rng, fake)
+        orders = create_orders(world, day, rng)
+
+        activity = folder / "activity"
+        n_customers = write_csv(activity / "customers.csv", customers, Customer.CSV_COLUMNS,
+                                write_if_empty=True)
+        n_orders = write_jsonl(activity / "orders.jsonl", orders)
+        n_cancelled = sum(order.status == "cancelled" for order in orders)
 
         write_done(folder)     # always last: tells the ingester this day is complete
 
-        log.info("%s: %d restaurants, %d menu items, %d drivers",
-                 day, n_restaurants, n_menu_items, n_drivers)
+        log.info("%s: %d restaurants, %d menu items, %d drivers | %d customers, %d orders (%d cancelled)",
+                 day, n_restaurants, n_menu_items, n_drivers, n_customers, n_orders, n_cancelled)
 
     log.info("Done.")
     return 0

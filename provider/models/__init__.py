@@ -6,7 +6,8 @@ not rows in the Dishpatch database. src/ never imports from here.
 from provider.models.customer import Customer
 from provider.models.driver import Driver
 from provider.models.menu_item import MenuItem
+from provider.models.order import Order, OrderItem
 from provider.models.restaurant import Restaurant
 from provider.models.world import World
 
-__all__ = ["Customer", "Driver", "MenuItem", "Restaurant", "World"]
+__all__ = ["Customer", "Driver", "MenuItem", "Order", "OrderItem", "Restaurant", "World"]
