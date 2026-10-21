@@ -19,7 +19,8 @@ from faker import Faker
 from provider.config import PARTNER
 from provider.activity import create_customers_for_day, create_orders
 from provider.models import Customer, Driver, MenuItem, Restaurant, World
-from provider.reference import create_drivers, create_menu_items, create_restaurants
+from provider.reference import (create_drivers, create_menu_items, create_restaurants,
+                                make_reference_changes)
 from provider.writers import day_folder, reset_folder, write_csv, write_done, write_jsonl
 
 
@@ -115,8 +116,8 @@ def main(argv=None) -> int:
             restaurants = create_restaurants(world, rng, fake)
             menu_items = create_menu_items(world, rng)
             drivers = create_drivers(world, rng, fake)
-        else:        # TODO: later-day changes -> make_reference_changes(world, rng)
-            restaurants, menu_items, drivers = [], [], []
+        else:        # later days: only what changed (usually nothing)
+            restaurants, menu_items, drivers = make_reference_changes(world, rng, fake)
 
         reference = folder / "reference"
         n_restaurants = write_csv(reference / "restaurants.csv", restaurants, Restaurant.CSV_COLUMNS)
