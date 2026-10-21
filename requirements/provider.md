@@ -4,7 +4,8 @@ The provider is a script that **pretends to be an outside partner** sending us d
 It writes the files; it never touches the database. The ingester (see `ingester.md`) loads them.
 
 - Partner name: `redmondtownservice`
-- Run: `python -m src.scripts.provider --start 2026-09-01 --days 30 --seed 42 --out data/incoming`
+- Code: `provider/` (separate from `src/`; the two never import each other)
+- Run from the project root: `python -m provider.generator --start 2026-09-01 --days 30`
 
 ## 1. Output location and folder layout
 
@@ -182,7 +183,12 @@ So the charts have something to find:
 
 ## 8. Reproducibility
 
-- `--seed` makes runs repeatable: the same seed produces exactly the same files.
+- Default seed = year and month of `--start` (`2026-09-01` → `202609`). Each month gets its own
+  dataset, and re-running the same command produces exactly the same files.
+- `--seed N` overrides the default (e.g. to get a different dataset for the same month).
+- Generate a whole period in **one run** (e.g. `--start 2026-09-01 --days 61` for Sept + Oct).
+  Every run starts a fresh world (refs `R001`, `C0001`... again), so two separate runs must not be
+  loaded into the same database.
 
 ## 9. Later: messy data (phase 2)
 

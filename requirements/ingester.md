@@ -67,7 +67,11 @@ one query each:
 | customers.csv | `contacts` → `profiles` → `accounts` (type `Customer`) → `users` |
 | orders.jsonl | `orders`, `order_items` |
 
-- `accounts.username` = email. Imported accounts get a placeholder password (they cannot log in).
+- `accounts.username` = email. Imported accounts get the fixed placeholder password `IMPORTED`
+  (not a real hash, so it can never match a login; fine for this learning project).
+- Restaurant owners are matched by email: if an account with that username already exists,
+  reuse its user (one owner can have several restaurants; re-runs don't hit the UNIQUE username).
+- Restaurants: new `restaurant_ref` → insert; known → update name, city, cuisine, active.
 - `restaurants.operational` = the file's `active`.
 
 ## 6. Idempotency (safe to re-run)

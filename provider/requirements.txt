@@ -1,0 +1,3 @@
+# Packages for the pretend partner (provider/). Not needed by the API service.
+faker>=24.0
+numpy>=1.26
