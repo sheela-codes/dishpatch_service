@@ -41,6 +41,8 @@ services:
       - "8000:8000" # http://localhost:8000/docs
     volumes:
       - ./src:/app/src # bind mount: code edits reload without a rebuild
+      - ./data:/app/data:ro   # partner delivery files, read-only for the ingester
+      - ./logs:/app/logs      # ingester log files, visible on your Mac
     command: uvicorn src.app.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       db:

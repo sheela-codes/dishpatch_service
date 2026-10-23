@@ -207,6 +207,11 @@ Print one summary line per folder and a final total.
 
 ## 11. Open decisions
 
+- **Menus.** The partner files have no menus (a dish belongs straight to a restaurant), so
+  `menu_items.menu_id` is left NULL for now. Later: add menus to the provider and the spec
+  (with a name, e.g. Lunch/Dinner), give `menus` a name and a real foreign key to restaurants,
+  and load them before menu items.
+
 - **Old logs.** Original idea: delete the old log file on every run. This spec keeps one
   file per run instead, so runs can be compared. Choose one.
 - **Inactive items and drivers.** This spec rejects orders that use an inactive menu item or

@@ -798,3 +798,33 @@ ALTER TABLE public.restaurants
     ADD COLUMN city       text NOT NULL,
     ADD COLUMN opened_at  date;
 
+
+-- =====================================================================
+-- Round 2: partner data loading (see requirements/ingester.md, section 9)
+-- =====================================================================
+
+-- Partner IDs. UNIQUE stops the same partner record being loaded twice
+-- (NULL is allowed: records created directly on Dishpatch have no partner ref).
+ALTER TABLE public.restaurants ADD COLUMN external_ref text UNIQUE;   -- 'R007'
+ALTER TABLE public.menu_items  ADD COLUMN external_ref text UNIQUE;   -- 'M0071'
+ALTER TABLE public.users       ADD COLUMN external_ref text UNIQUE;   -- 'C0042', 'D003'
+ALTER TABLE public.orders      ADD COLUMN external_ref text UNIQUE;   -- 'O-20261019-0013'
+
+-- Soft delete: switched off, never deleted (old orders still point at them).
+ALTER TABLE public.menu_items ADD COLUMN active boolean NOT NULL DEFAULT true;
+ALTER TABLE public.users      ADD COLUMN active boolean NOT NULL DEFAULT true;
+
+-- Details the partner sends that had no column yet.
+ALTER TABLE public.contacts ADD COLUMN city text;
+ALTER TABLE public.users    ADD COLUMN created_at timestamptz;          -- customer signed_up_at
+
+-- Load log: which partner files have been loaded, so re-runs skip them.
+CREATE TABLE public.file_loads (
+    folder        text NOT NULL,                       -- '2026/10/19'
+    file_name     text NOT NULL,                       -- 'activity/orders.jsonl'
+    checksum      text NOT NULL,                       -- SHA-256 of the file
+    rows_loaded   integer NOT NULL,
+    rows_rejected integer NOT NULL,
+    loaded_at     timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (folder, file_name)
+);
