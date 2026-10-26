@@ -1,0 +1,326 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Dispatch API
+meta:
+  id: wrk_e365002891004d41b88729629ec9215f
+  created: 1792883333694
+  modified: 1792883333694
+  description: ""
+collection:
+  - url: "{{base_url}}/health"
+    name: Health
+    meta:
+      id: req_d441cdaa1ce149df8a3a7055d0c79875
+      created: 1792884583044
+      modified: 1792884607665
+      isPrivate: false
+      description: ""
+      sortKey: -1792884583044
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - name: restaurants
+    meta:
+      id: fld_46035cd5202245dbb13ab90cdf6f5420
+      created: 1792883343643
+      modified: 1792883343643
+      sortKey: -1792883343643
+      description: ""
+    children:
+      - url: "{{base_url}}/restaurants"
+        name: GET-ALL
+        meta:
+          id: req_ab0f71d4113b496b8f591bb87d13906e
+          created: 1792883349630
+          modified: 1792888299119
+          isPrivate: false
+          description: ""
+          sortKey: -1792883349630
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/restaurants/18"
+        name: GET
+        meta:
+          id: req_750fc338dd82463eb2cb9661c954d0a6
+          created: 1792884647334
+          modified: 1792889171646
+          isPrivate: false
+          description: ""
+          sortKey: -1792884647334
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url }}/restaurants"
+        name: CREATE
+        meta:
+          id: req_9960c0fa2aa242299a9291ee6bad6a98
+          created: 1792885800067
+          modified: 1792888317898
+          isPrivate: false
+          description: ""
+          sortKey: -1792885800067
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "name": "VeggiePlanet",
+              "cuisine": "American",
+              "city": "Redmond",
+              "opened_at": "2026-10-24",
+              "owner": {
+                "name": "Maya Green",
+                "email": "maya@veggieplanet.example.com",
+                "phone": "4255550142"
+              },
+              "menu_items": [
+                { "name": "Veggie Burger",          "price": 12.36 },
+                { "name": "French Fries",           "price": 8.00 },
+                { "name": "Tofu Satay",             "price": 18.12 },
+                { "name": "Chickpea Salad",         "price": 9.43 },
+                { "name": "BBQ Jackfruit Sandwich", "price": 13.75 },
+                { "name": "Black Bean Tacos",       "price": 11.50 },
+                { "name": "Mushroom Lentil Chili",  "price": 10.25 },
+                { "name": "Sweet Potato Fries",     "price": 7.50 },
+                { "name": "Vegan Mac and Cheese",   "price": 12.95 },
+                { "name": "Quinoa Power Bowl",      "price": 14.20 },
+                { "name": "Avocado Toast",          "price": 9.80 },
+                { "name": "Dairy-Free Chocolate Shake", "price": 6.75 }
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/restaurants/18"
+        name: DELETE
+        meta:
+          id: req_d5e4c607c6f649bcb9393ff937bde708
+          created: 1792887770734
+          modified: 1792888309501
+          isPrivate: false
+          description: ""
+          sortKey: -1792887770734
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/restaurants/18/reactivate"
+        name: REACTIVATE
+        meta:
+          id: req_468fb0c98d4a413bb562e4b21a68d13e
+          created: 1792889004769
+          modified: 1793054505475
+          isPrivate: false
+          description: ""
+          sortKey: -1792889004769
+        method: PATCH
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/restaurants/18"
+        name: UPDATE
+        meta:
+          id: req_a72b6ddd34dd4881a11b28ca789b90cb
+          created: 1792895697641
+          modified: 1792896250687
+          isPrivate: false
+          description: ""
+          sortKey: -1792895697641
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "VeggiePlanet",
+            	"add_menu_items": [
+            		{
+            			"name": "Tomato and Pesto Flatbread",
+            			"price": "22.15"
+            		},
+            		{
+            			"name": "Raspberry Chocolate Cake",
+            			"price": "14.41"
+            		}
+            		
+            	],
+            	"remove_menu_item_ids": [214]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: customer
+    meta:
+      id: fld_bacd6c5d691f447a9118ffdc01ac6737
+      created: 1792900280527
+      modified: 1793054565734
+      sortKey: -1792900280527
+      description: ""
+    children:
+      - url: "{{base_url}}/customers/500"
+        name: GET
+        meta:
+          id: req_5f4ab9c040e14df1a7f68f00c2352318
+          created: 1792900288064
+          modified: 1792902187117
+          isPrivate: false
+          description: ""
+          sortKey: -1792900288064
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/customers"
+        name: CREATE
+        meta:
+          id: req_c2934dea6b464039bc1332acfcb8ec28
+          created: 1792901918141
+          modified: 1793054543062
+          isPrivate: false
+          description: ""
+          sortKey: -1792901918141
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	   "name": "Jane Dow",
+                 "email": "jane.doe@myhouse.com", 
+            		 "phone": "7658821111",
+                 "address": "1 Roberts Road, Newton, MA 04812", 
+            	"city": "Newton"
+            	
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: orders
+    meta:
+      id: fld_cf61a6a429ce4ba7bc6812e6c2aabfa9
+      created: 1792981086700
+      modified: 1792981086700
+      sortKey: -1792981086700
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/orders/1168"
+        name: "GET "
+        meta:
+          id: req_1c9c9f06837246c68d650b2376b9cac2
+          created: 1792981092132
+          modified: 1792982353337
+          isPrivate: false
+          description: ""
+          sortKey: -1792981092132
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/orders"
+        name: CREATE
+        meta:
+          id: req_a398c6e208ba4438877c97d771f8605d
+          created: 1792982181655
+          modified: 1792982293880
+          isPrivate: false
+          description: ""
+          sortKey: -1792982181656
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "customer_id": 209,
+              "restaurant_id": 18,
+              "items": [
+                { "menu_item_id": 208, "quantity": 2 },
+                { "menu_item_id": 209,    "quantity": 1 }
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_4d22d33ca7300e03d54740f2aaaf4074b5d6e5aa
+    created: 1792883333700
+    modified: 1792883333700
+environments:
+  name: Base Environment
+  meta:
+    id: env_4d22d33ca7300e03d54740f2aaaf4074b5d6e5aa
+    created: 1792883333698
+    modified: 1792884508291
+    isPrivate: false
+  data:
+    base_url: http://localhost:8000
