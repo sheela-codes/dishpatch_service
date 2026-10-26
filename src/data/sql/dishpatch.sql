@@ -828,3 +828,6 @@ CREATE TABLE public.file_loads (
     loaded_at     timestamptz NOT NULL DEFAULT now(),
     PRIMARY KEY (folder, file_name)
 );
+
+CREATE INDEX idx_orders_customer_id   ON public.orders (customer_id);
+CREATE INDEX idx_orders_restaurant_id ON public.orders (restaurant_id);

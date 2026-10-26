@@ -5,13 +5,15 @@ import logging
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import OperationalError
-from src.app.routers import restaurants, customers
+from src.app.routers import restaurants, customers, orders
 
 DATABASE_URL = os.environ["DATABASE_URL"]
 
 app = FastAPI(title="Dishpatch API")
 app.include_router(restaurants.router)
 app.include_router(customers.router)
+app.include_router(orders.router)
+
 logging.basicConfig(level=logging.INFO)
 
 @app.exception_handler(OperationalError)
